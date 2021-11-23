@@ -23,7 +23,13 @@
       }
 
       #content {
-        display: none;
+        visibility: hidden;
+      }
+
+      #taskList {
+        /* font-size: 4rem; */
+        display: flex;
+        flex-direction: column;
       }
 
       form {
@@ -75,7 +81,7 @@
               <input type="submit" hidden="" />
             </form>
             <ul id="taskList" class="list-unstyled">
-              <div class="taskTemplate" class="checkbox" style="display: none">
+              <div id="taskTemplate" class="checkbox">
                 <label>
                   <input type="checkbox" />
                   <span class="content">Task content goes here...</span>

@@ -63,13 +63,14 @@ App = {
   },
   loadContract: async () => {
     const todoList = await $.getJSON("TodoList.json");
+    let cAdd = "0x46d4953A9FEE189072E6bc30B9Cdc83DE515C9a1";
     // console.log(todoList);
     // let s = await new web3.eth.Contract(todoList.abi);
     // console.log(s);
-    App.contract.TodoList = await new web3.eth.Contract(todoList.abi);
+    App.contract.TodoList = await new web3.eth.Contract(todoList.abi, cAdd);
     App.contract.TodoList.setProvider(web3.currentProvider);
 
-    console.log(App.contract.TodoList);
+    // console.log(App.contract.TodoList);
     // App.todoList = await App.contract.TodoList.deployed();
     // console.log(App.todoList);
   },
@@ -79,6 +80,7 @@ App = {
     App.setLoading(true);
 
     element.innerHTML = App.account;
+    await App.renderTasks();
 
     App.setLoading(false);
   },
@@ -87,12 +89,62 @@ App = {
     App.loading = boolean;
     var loader = document.getElementById("loader");
     var content = document.getElementById("content");
+    // var content = $("#content");
+
     if (boolean) {
       loader.style.visibility = "visible";
       content.style.visibility = "hidden";
     } else {
       loader.style.visibility = "hidden";
       content.style.visibility = "visible";
+    }
+  },
+
+  renderTasks: async () => {
+    try {
+      let contract = App.contract.TodoList;
+      // console.log("contract here ==>", contract);
+      let taskCount = await contract.methods.taskCount().call();
+      let taskArray = [];
+      // console.log(task);
+      for (let index = 1; index <= taskCount; index++) {
+        let task = await contract.methods.tasks(index).call();
+        // console.log(task);
+        const taskId = task.id;
+        const taskContent = task.content;
+        const taskcompleted = task.completed;
+        console.log(taskId, taskContent, taskcompleted);
+        let p = document.getElementById("taskTemplate");
+
+        let e = $("#taskTemplate").clone();
+        console.log(e, taskContent, "nwiqn");
+
+        $(e).find(".content").html(taskContent);
+        $(e)
+          .find("input")
+          .prop("name", taskId)
+          .prop("checked", taskcompleted)
+          .prop("class", "input")
+          .on("click", App.toggleCompleted);
+
+        console.log(e);
+        var completedTaskList = document.getElementById("completedTaskList");
+        var taskList = $("#taskList");
+        if (taskcompleted) {
+          // alert("here");
+          completedTaskList.append(e.val);
+          console.log(completeTaskList);
+        } else {
+          // alert("there");
+          taskList.append(e.html());
+
+          console.log(taskList);
+        }
+
+        e.show();
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
 };
