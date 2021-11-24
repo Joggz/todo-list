@@ -20,4 +20,8 @@ contract("TodoList", (accounts) => {
     const task = await this.todoList.tasks(taskCount);
     assert.equal(task.id.toNumber(), taskCount.toNumber());
   });
+  it("should create another task ", async () => {
+    const task = await this.todoList.createTask("learn some more bcd stuff");
+    console.log(task);
+  });
 });

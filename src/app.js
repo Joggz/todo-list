@@ -57,13 +57,13 @@ App = {
     // alert("i got here");
     // console.log("====>>>>", "web3 accouts", await web3.eth.getAccounts());
     let acc = await web3.eth.getAccounts();
-
+    console.log(acc);
     App.account = acc[0];
     // alert(App.account);
   },
   loadContract: async () => {
     const todoList = await $.getJSON("TodoList.json");
-    let cAdd = "0x46d4953A9FEE189072E6bc30B9Cdc83DE515C9a1";
+    let cAdd = "0x4B303824fD9B82C227B2750f1A57E7c88038B8eA";
     // console.log(todoList);
     // let s = await new web3.eth.Contract(todoList.abi);
     // console.log(s);
@@ -103,21 +103,19 @@ App = {
   renderTasks: async () => {
     try {
       let contract = App.contract.TodoList;
-      // console.log("contract here ==>", contract);
+
       let taskCount = await contract.methods.taskCount().call();
       let taskArray = [];
-      // console.log(task);
+
       for (let index = 1; index <= taskCount; index++) {
         let task = await contract.methods.tasks(index).call();
-        // console.log(task);
+
         const taskId = task.id;
         const taskContent = task.content;
         const taskcompleted = task.completed;
-        console.log(taskId, taskContent, taskcompleted);
         let p = document.getElementById("taskTemplate");
 
         let e = $("#taskTemplate").clone();
-        console.log(e, taskContent, "nwiqn");
 
         $(e).find(".content").html(taskContent);
         $(e)
@@ -127,7 +125,6 @@ App = {
           .prop("class", "input")
           .on("click", App.toggleCompleted);
 
-        console.log(e);
         var completedTaskList = document.getElementById("completedTaskList");
         var taskList = $("#taskList");
         if (taskcompleted) {
@@ -137,12 +134,34 @@ App = {
         } else {
           // alert("there");
           taskList.append(e.html());
-
-          console.log(taskList);
         }
 
         e.show();
       }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  createTask: async () => {
+    App.setLoading(true);
+    const content = $("#newTask").val();
+
+    let contract = App.contract.TodoList;
+    console.log(content, contract);
+    let s = await contract.methods
+      .createTask(content)
+      .send({ from: App.account });
+
+    // let taskCount = await contract.methods.taskCount().call();
+    // console.log("======", s, taskCount);
+    try {
+      // App.setLoading(true);
+      // const content = $("#newTask").val();
+      // console.log(content);
+      // let contract = App.contract.TodoList;
+      // let s = await contract.methods.createTask(content).call();
+      // console.log("======", s);
+      // window.location.reload();
     } catch (error) {
       console.log(error);
     }
