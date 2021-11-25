@@ -13,6 +13,7 @@ contract TodoList {
     mapping(uint => Task) public tasks;
 
     event TodoCreated(uint id, string _content, bool completed);
+    event TaskCompleted(uint id, bool completed);
 
     constructor()  {
         createTask("should create default todo item");
@@ -22,6 +23,13 @@ contract TodoList {
         taskCount++;
         tasks[taskCount] = Task(taskCount, _content, false);
         emit TodoCreated(taskCount, _content, false);
+    }
+
+    function toggleCompleted(uint _id) public{
+        Task memory _task = tasks[_id];
+        _task.completed = !_task.completed;
+        tasks[_id] = _task;
+        emit TaskCompleted(_id, _task.completed);
     }
 
 

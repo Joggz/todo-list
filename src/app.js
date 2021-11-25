@@ -53,9 +53,6 @@ App = {
     }
   },
   loadAccount: async () => {
-    // console.log("app loading");
-    // alert("i got here");
-    // console.log("====>>>>", "web3 accouts", await web3.eth.getAccounts());
     let acc = await web3.eth.getAccounts();
     console.log(acc);
     App.account = acc[0];
@@ -63,16 +60,10 @@ App = {
   },
   loadContract: async () => {
     const todoList = await $.getJSON("TodoList.json");
-    let cAdd = "0x4B303824fD9B82C227B2750f1A57E7c88038B8eA";
-    // console.log(todoList);
-    // let s = await new web3.eth.Contract(todoList.abi);
-    // console.log(s);
+    let cAdd = "0x692d871510794f51FDD9d8291eB6073F74b08Ef0";
+
     App.contract.TodoList = await new web3.eth.Contract(todoList.abi, cAdd);
     App.contract.TodoList.setProvider(web3.currentProvider);
-
-    // console.log(App.contract.TodoList);
-    // App.todoList = await App.contract.TodoList.deployed();
-    // console.log(App.todoList);
   },
 
   render: async () => {
@@ -89,7 +80,6 @@ App = {
     App.loading = boolean;
     var loader = document.getElementById("loader");
     var content = document.getElementById("content");
-    // var content = $("#content");
 
     if (boolean) {
       loader.style.visibility = "visible";
@@ -128,11 +118,8 @@ App = {
         var completedTaskList = document.getElementById("completedTaskList");
         var taskList = $("#taskList");
         if (taskcompleted) {
-          // alert("here");
           completedTaskList.append(e.val);
-          console.log(completeTaskList);
         } else {
-          // alert("there");
           taskList.append(e.html());
         }
 
@@ -151,20 +138,6 @@ App = {
     let s = await contract.methods
       .createTask(content)
       .send({ from: App.account });
-
-    // let taskCount = await contract.methods.taskCount().call();
-    // console.log("======", s, taskCount);
-    try {
-      // App.setLoading(true);
-      // const content = $("#newTask").val();
-      // console.log(content);
-      // let contract = App.contract.TodoList;
-      // let s = await contract.methods.createTask(content).call();
-      // console.log("======", s);
-      // window.location.reload();
-    } catch (error) {
-      console.log(error);
-    }
   },
 };
 
